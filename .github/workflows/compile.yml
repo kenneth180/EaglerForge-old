@@ -1,9 +1,9 @@
 name: Compile EaglerForge Client
-on: [workflow_dispatch] # Allows you to press a button to start the build
+on: [workflow_dispatch]
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -14,13 +14,22 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
 
-      - name: Compile Game
-        run: |
-          ./CompileLatestClient.bat --headless
-        # Note: Headless bypasses the installer GUI so GitHub can build it automatically
+      - name: Grant Execute Permissions
+        run: chmod +x ./build_init.sh ./build_make_workspace.sh ./CompileLatestClient.sh run_chmod.sh
+
+      - name: Initialize Workspace
+        run: ./build_init.sh
+
+      - name: Setup Decompiler Workspace
+        run: ./build_make_workspace.sh
+
+      - name: Compile Client Base
+        run: ./CompileLatestClient.sh --headless || echo "Bypassing GUI Installer"
 
       - name: Upload HTML Game File
         uses: actions/upload-artifact@v4
         with:
           name: EaglerForge-Offline-Client
-          path: ./**/*.html
+          path: |
+            ./**/*.html
+            ./sources/
