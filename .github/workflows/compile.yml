@@ -17,14 +17,14 @@ jobs:
       - name: Grant Execute Permissions
         run: chmod +x ./build_init.sh ./build_make_workspace.sh ./CompileLatestClient.sh run_chmod.sh
 
-      - name: Initialize Workspace
-        run: ./build_init.sh
+      - name: Initialize Workspace (Auto-Accept License)
+        run: echo "" | ./build_init.sh
 
       - name: Setup Decompiler Workspace
         run: ./build_make_workspace.sh
 
       - name: Compile Client Base
-        run: ./CompileLatestClient.sh --headless || echo "Bypassing GUI Installer"
+        run: ./CompileLatestClient.sh --headless || echo "Bypassing GUI"
 
       - name: Upload HTML Game File
         uses: actions/upload-artifact@v4
